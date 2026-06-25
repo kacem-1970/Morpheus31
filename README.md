@@ -16,6 +16,8 @@ by up to 75% through a triple-judge verification system.
 ```bash
 pip install morpheus-protocol
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20876879.svg)]   (https://doi.org/10.5281/zenodo.20876879)
+
 -----------------------------------------------------------------------------------------
 
 # 🛡️ MORPHEUS Protocol
@@ -88,3 +90,5 @@ Pedagogical Architect & AI Researcher
 "Intelligence is not knowing all the answers, but knowing when you don't know." — MORPHEUS Principle
 Acknowledgments
 Special thanks to the Alibaba Cloud Qwen Team for their commitment to open-source AI development and for creating models that empower global contributors. This project was developed as part of the Qwen Event Ambassador Program application.
+
+
