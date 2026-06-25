@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocole MORPHEUS - Démonstration Interactive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 2px solid #ffd700;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #a0a0a0;
+            font-style: italic;
+        }
+        
+        .input-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffd700;
+        }
+        
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #0f0c29;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin: 20px auto;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .process-section {
+            display: none;
+            margin-bottom: 30px;
+        }
+        
+        .split {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffd700;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .split-title {
+            font-size: 1.5em;
+            color: #ffd700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .judge {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .judge-icon {
+            font-size: 2em;
+        }
+        
+        .judge-content {
+            flex: 1;
+        }
+        
+        .judge-name {
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+        
+        .judge-verdict {
+            font-size: 0.95em;
+            color: #a0a0a0;
+        }
+        
+        .verdict-pass {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .verdict-fail {
+            color: #f44336;
+            font-weight: bold;
+        }
+        
+        .verdict-warning {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        .result-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid #ffd700;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .result-title {
+            font-size: 2em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .confidence-score {
+            text-align: center;
+            font-size: 3em;
+            color: #ffd700;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .decision-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 10px;
+        }
+        
+        .decision-generate {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .decision-prudence {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .decision-abstain {
+            background: #f44336;
+            color: white;
+        }
+        
+        .response-text {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        .limitations {
+            background: rgba(255, 152, 0, 0.1);
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+        
+        .limitations-title {
+            color: #ff9800;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #a0a0a0;
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
+            margin-top: 40px;
+        }
+        
+        .github-link {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .github-link:hover {
+            text-decoration: underline;
+        }
+        
+        .example-btn {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 8px 16px;
+            border: 1px solid #ffd700;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .example-btn:hover {
+            background: rgba(255, 215, 0, 0.4);
+        }
+        
+        .examples-section {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ Protocole MORPHEUS</h1>
+            <p class="subtitle">Cadre anti-hallucinations pour les grands modèles de langage</p>
+        </header>
+
+        <div class="input-section">
+            <h2 style="color: #ffd700; margin-bottom: 20px;">Tester le protocole</h2>
+
+            <div class="input-group">
+                <label for="question">Question :</label>
+                <input type="text" id="question" placeholder="Par exemple, qui a remporté la Coupe du monde de la FIFA 1976 ?">
+            </div>
+
+            <div class="input-group">
+                <label for="context">Contexte (facultatif) :</label>
+                <textarea id="context" placeholder="Par exemple, la Coupe du monde de la FIFA a lieu tous les 4 ans. Le vainqueur de 1974 était l'Allemagne de l'Ouest."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="information">Informations à vérifier :</label>
+                <textarea id="information" placeholder="Par exemple, le Brésil a remporté la Coupe du monde de la FIFA en 1976."></textarea>
+            </div>
+
+            <div class="examples-section">
+                <label>Exemples rapides :</label><br>
+                <button class="example-btn" onclick="loadExample(1)">Fait vérifié</button>
+                <button class="example-btn" onclick="loadExample(2)">Prémisse fausse</button>
+                <button class="example-btn" onclick="loadExample(3)">Contradiction d'état</button>
+                <button class="example-btn" onclick="loadExample(4)">Contradiction temporelle</button>
+                <button class="example-btn" onclick="loadExample(5)">Contradiction numérique</button>
+            </div>
+
+            <button class="btn" onclick="runMorpheus()">Exécuter le protocole MORPHEUS</button>
+        </div>
+
+        <div class="process-section" id="processSection">
+            <div class="split" id="split400">
+                <div class="split-title">🏃 SPLIT 400m - COMPRENDRE</div>
+                <div id="split400Content"></div>
+            </div>
+
+            <div class="split" id="split800">
+                <div class="split-title">🏃 SPLIT 800m - VÉRIFIER (Triple juge algorithmique)</div>
+                <div id="split800Content"></div>
+            </div>
+
+            <div class="split" id="split1200">
+                <div class="split-title">🏃 SPLIT 1200m - DÉCIDER</div>
+                <div id="split1200Content"></div>
+            </div>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <div class="result-title"> FINISH - VERDICT DE MORPHEUS</div>
+            <div id="resultContent"></div>
+        </div>
+
+        <footer>
+            <p>Protocole MORPHEUS v2.0 | Licence MIT</p>
+            <p>Créé par <strong>Kacem Mansouri</strong> |
+                <a href="https://github.com/kacem-1970/Morpheus_Qwen" class="github-link" target="_blank">Repository GitHub</a></p>
+            <p style="margin-top: 10px; font-size: 0.9em;">"L'intelligence est d'arriver à une solution correcte avec l'algorithme le plus court."</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==============================================================================
+        // CONFIGURATION & BASES DE CONNAISSANCES (Synchronisé avec Python v2.0)
+        // ==============================================================================
+
+        const STOP_WORDS_FR = new Set([
+            'le', 'la', 'les', 'un', 'une', 'des', 'de', 'du', 'est', 'sont',
+            'a', 'ont', 'et', 'ou', 'mais', 'en', 'dans', 'sur', 'pour', 'avec',
+            'ce', 'cette', 'ces', 'son', 'sa', 'ses', 'il', 'elle', 'ils', 'elles',
+            'au', 'aux', 'que', 'qui', 'ne', 'pas', 'plus', 'se', 'si', 'y'
+        ]);
+
+        const KNOWN_FACTS_DB = [
+            "paris est la capitale de la france",
+            "l'eau bout à 100 degrés celsius",
+            "2+2=4"
+        ];
+
+        const OPPOSITION_MATRIX = {
+            // États
+            "en ligne": ["hors ligne", "arrêté", "panne"],
+            "actif": ["inactif", "fermé"],
+            "vivant": ["mort", "décès"],
+            "fonctionne": ["panne", "arrêté", "critique"],
+            "succès": ["échec"],
+            "normal": ["critique", "anormal"],
+            "approuvé": ["rejeté", "annulé"],
+            "validé": ["invalidé", "refusé"],
+
+            // Temps
+            "hier": ["demain", "futur"],
+            "matin": ["soir", "nuit"],
+            "passé": ["futur"],
+            "ancien": ["nouveau"]
+        };
+
+        // Exemples pré-chargés pour la démo
+        const examples = {
+            1: {
+                question: "Quelle est la capitale de la France ?",
+                context: "La France est un pays d'Europe occidentale. Paris est sa capitale.",
+                information: "Paris est la capitale de la France."
+            },
+            2: {
+                question: "Qui a remporté la Coupe du Monde de la FIFA en 1976 ?",
+                context: "La Coupe du Monde a lieu tous les 4 ans. 1974: Allemagne, 1978: Argentine.",
+                information: "Le Brésil a gagné la Coupe du Monde en 1976."
+            },
+            3: {
+                question: "Quel est l'état actuel du serveur principal ?",
+                context: "Le serveur principal est actuellement en ligne et fonctionne normalement.",
+                information: "Le serveur principal est hors ligne et subit une panne critique."
+            },
+            4: {
+                question: "Quand est prévue la prochaine réunion du comité de direction ?",
+                context: "La prochaine réunion du comité de direction est prévue demain matin à 9h00.",
+                information: "La réunion du comité de direction a eu lieu hier après-midi à 14h00."
+            },
+            5: {
+                question: "Quel est le budget validé pour le projet de rénovation ?",
+                context: "Le conseil d'administration a validé un budget strict de 50000 euros.",
+                information: "Le projet de rénovation a été approuvé avec un budget alloué de 75000 euros."
+            }
+        };
+
+        function loadExample(num) {
+            document.getElementById('question').value = examples[num].question;
+            document.getElementById('context').value = examples[num].context;
+            document.getElementById('information').value = examples[num].information;
+        }
+
+        // ==============================================================================
+        // ALGORITHME JUGE 1 : LE DÉTECTIVE (Source Grounding)
+        // Weighted Token Overlap with Stop-Word Filtering - Complexité O(N)
+        // ==============================================================================
+
+        function judge1_source_grounding(info, ctx) {
+            if (!ctx || !info) return {
+                verdict: "FAIL",
+                score: 0,
+                reason: "Contexte ou information vide"
+            };
+
+            // 1. Prétraitement & Tokenization
+            const cleanInfo = info.toLowerCase().replace(/[^\w\s]/g, '');
+            const cleanCtx = ctx.toLowerCase().replace(/[^\w\s]/g, '');
+
+            const tokensInfo = cleanInfo.split(/\s+/).filter(t => !STOP_WORDS_FR.has(t) && t.length > 2);
+            const setCtx = new Set(cleanCtx.split(/\s+/)); // Set pour recherche O(1)
+
+            if (tokensInfo.length === 0) return {
+                verdict: "WARNING",
+                score: 0.5,
+                reason: "Aucun token significatif après filtrage"
+            };
+
+            // 2. Calcul de Recouvrement
+            let matches = 0;
+            tokensInfo.forEach(t => {
+                if (setCtx.has(t)) matches++;
+            });
+            const overlapScore = matches / tokensInfo.length;
+
+            // 3. Seuil Dynamique
+            const threshold = 0.6;
+            if (overlapScore >= threshold) {
+                return {
+                    verdict: "PASS",
+                    score: parseFloat(overlapScore.toFixed(2)),
+                    reason: `Recouvrement lexical fort (${Math.round(overlapScore*100)}%)`
+                };
+            } else {
+                return {
+                    verdict: "FAIL",
+                    score: parseFloat(overlapScore.toFixed(2)),
+                    reason: `Recouvrement insuffisant (${Math.round(overlapScore*100)}% < ${threshold*100}%)`
+                };
+            }
+        }
+
+        // ==============================================================================
+        // ALGORITHME JUGE 2 : L'EXPERT (Factuality Check)
+        // Deterministic Knowledge Base Lookup - Zéro hallucination possible
+        // ==============================================================================
+
+        function judge2_factuality_check(info, ctx, j1Result) {
+            const infoLower = info.toLowerCase();
+
+            // 1. Lookup dans la Base de Faits Structurée
+            for (const fact of KNOWN_FACTS_DB) {
+                if (infoLower.includes(fact)) {
+                    return {
+                        verdict: "PASS",
+                        score: 1.0,
+                        reason: "Fait vérifié en base de connaissances interne"
+                    };
+                }
+            }
+
+            // 2. Fallback Contextuel (Si Juge 1 a validé avec un score élevé)
+            if (j1Result.verdict === "PASS" && j1Result.score >= 0.8) {
+                return {
+                    verdict: "PASS",
+                    score: 0.9,
+                    reason: "Fait supporté par le contexte local (Grounding fort)"
+                };
+            }
+
+            // 3. Abstention par défaut (Principe de précaution)
+            return {
+                verdict: "WARNING",
+                score: 0.5,
+                reason: "Non vérifiable automatiquement sans source externe"
+            };
+        }
+
+        // ==============================================================================
+        // ALGORITHME JUGE 3 : LE LOGICIEN (Cohérence Sémantique)
+        // Semantic Distillation & Opposition Matrix - Logique symbolique légère
+        // ==============================================================================
+
+        function extractNumbers(text) {
+            const matches = text.match(/\b\d+\b/g);
+            return matches ? matches.map(Number) : [];
+        }
+
+        function judge3_logical_consistency(info, ctx) {
+            if (!ctx || !info) return {
+                verdict: "PASS",
+                score: 1.0,
+                contradictions: [],
+                reason: "Aucun contexte pour comparer"
+            };
+
+            const ctxLower = ctx.toLowerCase();
+            const infoLower = info.toLowerCase();
+            const contradictionsFound = [];
+
+            // 1. Vérification Numérique (Comparaison arithmétique stricte)
+            const ctxNums = new Set(extractNumbers(ctxLower));
+            const infoNums = new Set(extractNumbers(infoLower));
+
+            if (ctxNums.size > 0 && infoNums.size > 0) {
+                const arrCtx = [...ctxNums].sort((a, b) => a - b);
+                const arrInfo = [...infoNums].sort((a, b) => a - b);
+
+                if (JSON.stringify(arrCtx) !== JSON.stringify(arrInfo)) {
+                    contradictionsFound.push(`Contradiction numérique: [${arrCtx.join(', ')}] vs [${arrInfo.join(', ')}]`);
+                }
+            }
+
+            // 2. Matrice d'Opposition (États, Temps)
+            for (const [term, opposites] of Object.entries(OPPOSITION_MATRIX)) {
+                const ctxHasTerm = ctxLower.includes(term);
+                const infoHasOpposite = opposites.some(op => infoLower.includes(op));
+
+                if (ctxHasTerm && infoHasOpposite) {
+                    const matchedOp = opposites.find(op => infoLower.includes(op));
+                    contradictionsFound.push(`Opposition sémantique: '${term}' vs '${matchedOp}'`);
+                }
+            }
+
+            // 3. Décision Finale
+            if (contradictionsFound.length > 0) {
+                return {
+                    verdict: "FAIL",
+                    score: 0.0,
+                    contradictions: contradictionsFound,
+                    reason: contradictionsFound.join(" | ")
+                };
+            }
+
+            return {
+                verdict: "PASS",
+                score: 1.0,
+                contradictions: [],
+                reason: "Aucune contradiction détectée"
+            };
+        }
+
+        // ==============================================================================
+        // MOTEUR D'AGRÉGATION (Split 1200m)
+        // ==============================================================================
+
+        function aggregate_verdicts(j1, j2, j3) {
+            const verdicts = [j1.verdict, j2.verdict, j3.verdict];
+            const failCount = verdicts.filter(v => v === "FAIL").length;
+            const warnCount = verdicts.filter(v => v === "WARNING").length;
+
+            let decision, confidence;
+
+            if (failCount > 0) {
+                decision = "ABSTENTION";
+                confidence = 0.0;
+            } else if (warnCount > 0) {
+                decision = "PRUDENCE";
+                confidence = 65.0;
+            } else {
+                decision = "GÉNÉRER";
+                confidence = Math.min(100, ((j1.score + j2.score + j3.score) / 3) * 100);
+            }
+
+            return {
+                decision,
+                confidence: parseFloat(confidence.toFixed(1))
+            };
+        }
+
+        // ==============================================================================
+        // FONCTION PRINCIPALE : Exécution du protocole MORPHEUS
+        // ==============================================================================
+
+        async function runMorpheus() {
+            const question = document.getElementById('question').value.trim();
+            const context = document.getElementById('context').value.trim();
+            const information = document.getElementById('information').value.trim();
+
+            if (!question || !information) {
+                alert("Veuillez remplir au moins les champs Question et Informations à vérifier.");
+                return;
+            }
+
+            // Réinitialiser l'affichage
+            document.getElementById('processSection').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+            ['split400Content', 'split800Content', 'split1200Content', 'resultContent'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+
+            // SPLIT 400m - COMPRENDRE
+            await sleep(500);
+            const ambiguous = question.length < 10;
+            document.getElementById('split400Content').innerHTML = `
+                <p><strong>Reformulation :</strong> "${question}"</p>
+                <p><strong>Vérification de l'ambiguïté :</strong> ${ambiguous ? '<span class="verdict-warning">⚠️ Question trop courte - ambiguïté potentielle</span>' : '<span class="verdict-pass">✅ Clair et précis</span>'}</p>
+                <p><strong>Contraintes :</strong> Contexte ${context ? 'fourni' : 'non fourni (facultatif)'}</p>
+            `;
+
+            // SPLIT 800m - VÉRIFIER (Triple Juge Algorithmique)
+            await sleep(1000);
+
+            const j1 = judge1_source_grounding(information, context);
+            const j2 = judge2_factuality_check(information, context, j1);
+            const j3 = judge3_logical_consistency(information, context);
+
+            document.getElementById('split800Content').innerHTML = `
+                <div class="judge">
+                    <div class="judge-icon">🕵️</div>
+                    <div class="judge-content">
+                        <div class="judge-name">Juge 1 - Le Détective (Token Overlap O(N))</div>
+                        <div class="judge-verdict">${j1.verdict === 'PASS' ? '<span class="verdict-pass">✅ RÉUSSI</span>' : j1.verdict === 'WARNING' ? '<span class="verdict-warning">️ AVERTISSEMENT</span>' : '<span class="verdict-fail">❌ ÉCHEC</span>'} - ${j1.reason}</div>
+                    </div>
+                </div>
+                <div class="judge">
+                    <div class="judge-icon">🌍</div>
+                    <div class="judge-content">
+                        <div class="judge-name">Juge 2 - L'Expert (Knowledge Base Lookup)</div>
+                        <div class="judge-verdict">${j2.verdict === 'PASS' ? '<span class="verdict-pass">✅ RÉUSSI</span>' : '<span class="verdict-warning">⚠️ AVERTISSEMENT</span>'} - ${j2.reason}</div>
+                    </div>
+                </div>
+                <div class="judge">
+                    <div class="judge-icon">🧠</div>
+                    <div class="judge-content">
+                        <div class="judge-name">Juge 3 - Le Logicien (Opposition Matrix)</div>
+                        <div class="judge-verdict">${j3.verdict === 'PASS' ? '<span class="verdict-pass">✅ RÉUSSI</span>' : '<span class="verdict-fail">❌ ÉCHEC</span>'} - ${j3.reason}</div>
+                    </div>
+                </div>
+            `;
+
+            // SPLIT 1200m - DÉCIDER
+            await sleep(1000);
+            const result = aggregate_verdicts(j1, j2, j3);
+
+            let decisionClass = "";
+            if (result.decision === "GÉNÉRER") decisionClass = "decision-generate";
+            else if (result.decision === "PRUDENCE") decisionClass = "decision-prudence";
+            else decisionClass = "decision-abstain";
+
+            document.getElementById('split1200Content').innerHTML = `
+                <p><strong>Agrégation :</strong> J1:${j1.verdict} | J2:${j2.verdict} | J3:${j3.verdict}</p>
+                <p><strong>Décision :</strong> <span class="decision-badge ${decisionClass}">${result.decision}</span></p>
+                <p><strong>Score de confiance :</strong> ${result.confidence.toFixed(1)} %</p>
+            `;
+
+            // FINISH - VERDICT
+            await sleep(1000);
+            let responseText = "";
+            if (result.decision === 'ABSTENTION') {
+                responseText = `❌ Je ne peux pas répondre avec certitude. ${j3.reason !== "Aucune contradiction détectée" ? j3.reason : "Informations non vérifiées."}`;
+            } else if (result.decision === 'PRUDENCE') {
+                responseText = `⚠️ Réponse sous réserve : ${information}<br><br>Note : Cette information n'a pas pu être entièrement vérifiée.`;
+            } else {
+                responseText = `✅ ${information}`;
+            }
+
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultContent').innerHTML = `
+                <div class="confidence-score">${result.confidence.toFixed(0)}%</div>
+                <div style="text-align: center;">
+                    <span class="decision-badge ${decisionClass}">${result.decision}</span>
+                </div>
+                <div class="response-text">
+                    <strong>📋 Réponse :</strong><br>
+                    ${responseText}
+                </div>
+                <div class="limitations">
+                    <div class="limitations-title">⚠️ Limitations connues</div>
+                    <p>La vérification automatique est limitée aux bases de connaissances intégrées et à la matrice d'opposition définie. Une validation humaine est requise pour les domaines critiques.</p>
+                </div>
+            `;
+
+            document.getElementById('resultSection').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+
+</html>
