@@ -62,3 +62,29 @@ pip install morpheus-protocol
 # Or clone directly
 git clone https://github.com/kacem-mansouri/morpheus-protocol.git
 cd morpheus-protocol
+
+----------------------
+
+MORPHEUS is specifically designed to complement the Qwen ecosystem:
+Multilingual Support: Fully compatible with Qwen's strong Arabic/French/English capabilities.
+RAG Enhancement: Acts as a verification layer on top of Qwen-RAG pipelines.
+Educational Use Cases: Ideal for academic environments where factual accuracy is non-negotiable.
+Open Contribution: Designed as a modular, extensible framework for community improvement.
+️ Roadmap
+Core Triple-Judge implementation (v1.0)
+RAG integration module (v1.1)
+Public anti-hallucination benchmark dataset (v1.2)
+Hugging Face Spaces interactive demo (v1.3)
+Domain-specific adapters (Medical, Legal, Academic) (v2.0)
+📄 License
+This project is licensed under the MIT License. See the LICENSE file for details.
+👤 Author & Contact
+Belkacem Mansouri
+Pedagogical Architect & AI Researcher
+École Nationale Polytechnique d'Oran, Algeria
+📧 Email: mansourikacem31@gmail.com
+
+🌐 Project: QWEN-Liverpool Initiative
+"Intelligence is not knowing all the answers, but knowing when you don't know." — MORPHEUS Principle
+Acknowledgments
+Special thanks to the Alibaba Cloud Qwen Team for their commitment to open-source AI development and for creating models that empower global contributors. This project was developed as part of the Qwen Event Ambassador Program application.
